@@ -1,4 +1,7 @@
 
+stages:
+  - performance
+
 performance:
   stage: performance
   image: docker:git
