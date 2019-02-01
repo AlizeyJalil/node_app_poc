@@ -1,19 +1,37 @@
 
-
-code_quality:
-  image: docker:stable
+performance:
+  stage: performance
+  image: docker:git
   variables:
-    DOCKER_DRIVER: overlay2
-  allow_failure: true
+    URL: https://www.flipkart.com
   services:
     - docker:stable-dind
   script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run
-        --env SOURCE_CODE="$PWD"
-        --volume "$PWD":/code
-        --volume /var/run/docker.sock:/var/run/docker.sock
-        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+    - mkdir gitlab-exporter
+    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+    - mkdir sitespeed-results
+    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
+    - mv sitespeed-results/data/performance.json performance.json
   artifacts:
+    paths:
+      - sitespeed-results/
     reports:
-      codequality: gl-code-quality-report.json
+      performance: performance.json
+
+#code_quality:
+#  image: docker:stable
+#  variables:
+#    DOCKER_DRIVER: overlay2
+#  allow_failure: true
+#  services:
+#    - docker:stable-dind
+#  script:
+#    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+#    - docker run
+#        --env SOURCE_CODE="$PWD"
+#        --volume "$PWD":/code
+#        --volume /var/run/docker.sock:/var/run/docker.sock
+#        "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+#  artifacts:
+#    reports:
+#      codequality: gl-code-quality-report.json
