@@ -14,7 +14,8 @@ deploy:
   image: node:slim
   script:
     - echo "here we will deploy"
-    #- node app.js
+    - npm install forever
+    - forever start app.js
 
 
 performance:
