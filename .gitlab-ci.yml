@@ -6,11 +6,18 @@ stages:
 
 build:
   stage: build
-  script:
-    - echo "in building phase"
+  job1:
+    script:
+      - echo "in building phase"
+  job2:
+    script:
+      - echo "in building phase itself. both of these are happening concurrently"
+  # each job gets run independently from each other
+
 
 deploy:
   stage: deploy
+  when: manual
   image: docker:stable
   services:
     - docker:stable-dind
