@@ -11,7 +11,7 @@ build:
 
 deploy:
   stage: deploy
-  image: node:slim
+  image: node:latest
   script:
     - echo "here we will deploy"
     - npm install forever
