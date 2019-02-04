@@ -11,12 +11,16 @@ build:
 
 deploy:
   stage: deploy
-  image: node:latest
+  image: docker:stable
+  services:
+    - docker:stable-dind
   script:
+    - echo "docker info"
+    - docker info
     - echo "here we will deploy"
-    - npm install forever
-    - forever start app.js
-
+    - docker build -t myapp-image .
+    - docker run --name=myapp -p 2000:3000 -d myapp-image
+    - echo "running sucesfully"
 
 performance:
   stage: performance
