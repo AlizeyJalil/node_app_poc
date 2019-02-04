@@ -13,7 +13,10 @@ deploy:
   stage: deploy
   image: node:slim
   script:
-    - node app.js
+    - echo "if the app is already running, first stop it and then run it"
+    - forever stop app.js
+    - forever start app.js
+
 
 performance:
   stage: performance
