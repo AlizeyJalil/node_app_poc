@@ -1,6 +1,18 @@
 
 stages:
+  - build
+  - deploy
   - performance
+
+build:
+  stage: build
+  script:
+    - echo "in building phase"
+
+deploy:
+  stage: deploy
+  script:
+    - node app.js
 
 performance:
   stage: performance
