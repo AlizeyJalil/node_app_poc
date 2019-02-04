@@ -23,6 +23,7 @@ deploy:
   services:
     - docker:stable-dind
   script:
+    - echo "wassup"
     - echo "docker info"
     - docker info
     - echo "here we will deploy"
