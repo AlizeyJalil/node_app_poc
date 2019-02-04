@@ -4,14 +4,14 @@ stages:
   - deploy
   - performance
 
-build:
+build_job1:
   stage: build
-  job1:
-    script:
-      - echo "in building phase"
-  job2:
-    script:
-      - echo "in building phase itself. both of these are happening concurrently"
+  script:
+    - echo "in building phase"
+build_job2:
+  stage: build
+  script:
+    - echo "in building phase itself. both of these are happening concurrently"
   # each job gets run independently from each other
 
 
