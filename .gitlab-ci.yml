@@ -9,11 +9,7 @@ build_job1:
   script:
     - echo "in building phase"
     - date +%s
-build_job2:
-  stage: build
-  script:
-    - echo "in building phase itself. both of these are happening concurrently"
-    - date +%s
+
   # each job gets run independently from each other
 
 
