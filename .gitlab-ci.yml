@@ -8,10 +8,12 @@ build_job1:
   stage: build
   script:
     - echo "in building phase"
+    - date +%s
 build_job2:
   stage: build
   script:
     - echo "in building phase itself. both of these are happening concurrently"
+    - date +%s
   # each job gets run independently from each other
 
 
@@ -44,6 +46,7 @@ performance:
     - mkdir sitespeed-results
     - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
     - mv sitespeed-results/data/performance.json performance.json
+    - date +%s
   artifacts:
     paths:
       - sitespeed-results/
