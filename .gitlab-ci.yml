@@ -17,8 +17,8 @@ build_job2:
 
 deploy:
   stage: deploy
-  when: manual
-  allow_failure: false
+  #when: manual
+  #allow_failure: false
   image: docker:stable
   services:
     - docker:stable-dind
