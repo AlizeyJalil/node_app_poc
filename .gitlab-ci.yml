@@ -1,52 +1,83 @@
 
 stages:
   - build
+  - test
   - deploy
-  - performance
+
 
 build_job1:
   stage: build
   script:
     - echo "in building phase"
+    - date +%s
+  only:
+    - branches
+  except:
+    - master
+
 build_job2:
   stage: build
   script:
-    - echo "in building phase itself. both of these are happening concurrently"
+    - echo "in building phase"
+    - date +%s
+  only:
+    - branches
+  except:
+    - master
+
+testing:
+  stage: test
+  script:
+    - echo "in the testing phase"
+  only:
+    - branches
+  except:
+    - master
+
   # each job gets run independently from each other
 
 
-deploy:
+deploy_staging:
   stage: deploy
-  when: manual
+  #when: manual
+  #allow_failure: false
   image: docker:stable
+  environment:
+    name: staging
   services:
     - docker:stable-dind
   script:
+    - echo "wassup"
     - echo "docker info"
     - docker info
     - echo "here we will deploy"
     - docker build -t myapp-image .
     - docker run --name=myapp -d myapp-image
     - echo "running succesfully"
+  only:
+    - master
+  except:
+    - branches
 
-performance:
-  stage: performance
-  image: docker:git
-  variables:
-    URL: https://www.flipkart.com
-  services:
-    - docker:stable-dind
-  script:
-    - mkdir gitlab-exporter
-    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
-    - mv sitespeed-results/data/performance.json performance.json
-  artifacts:
-    paths:
-      - sitespeed-results/
-    reports:
-      performance: performance.json
+#performance:
+#  stage: performance
+#  image: docker:git
+#  variables:
+#    URL: https://www.flipkart.com
+#  services:
+#    - docker:stable-dind
+#  script:
+#    - mkdir gitlab-exporter
+#    - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
+#    - mkdir sitespeed-results
+#    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io:6.3.1 --plugins.add ./gitlab-exporter --outputFolder sitespeed-results $URL
+#    - mv sitespeed-results/data/performance.json performance.json
+#    - date +%s
+#  artifacts:
+#    paths:
+#      - sitespeed-results/
+#    reports:
+#      performance: performance.json
 
 #code_quality:
 #  image: docker:stable
