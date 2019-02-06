@@ -56,8 +56,6 @@ deploy_staging:
     - echo "running succesfully"
   only:
     - master
-  except:
-    - branches
 
 #performance:
 #  stage: performance
