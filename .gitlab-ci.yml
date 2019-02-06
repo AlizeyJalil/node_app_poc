@@ -1,14 +1,38 @@
 
 stages:
   - build
+  - test
   - deploy
-  - performance
+
 
 build_job1:
   stage: build
   script:
     - echo "in building phase"
     - date +%s
+  only:
+    - branches
+  except:
+    - master
+
+build_job2:
+  stage: build
+  script:
+    - echo "in building phase"
+    - date +%s
+  only:
+    - branches
+  except:
+    - master
+
+testing:
+  stage: test
+  script:
+    - echo "in the testing phase"
+  only:
+    - branches
+  except:
+    - master
 
   # each job gets run independently from each other
 
@@ -30,6 +54,10 @@ deploy_staging:
     - docker build -t myapp-image .
     - docker run --name=myapp -d myapp-image
     - echo "running succesfully"
+  only:
+    - master
+  except:
+    - branches
 
 #performance:
 #  stage: performance
